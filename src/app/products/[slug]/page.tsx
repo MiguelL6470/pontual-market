@@ -36,8 +36,41 @@ export default async function ProductPage({ params }: { params: { slug: string }
   const mainImage = product.images?.[0]?.url
   const otherImages = product.images?.slice(1) || []
 
+  const baseUrl = await getBaseUrl()
+  const productUrl = `${baseUrl}/products/${product.slug}`
+  
+  // Schema markup para SEO
+  const productSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: product.title,
+    description: product.description,
+    image: product.images?.map(img => img.url) || [],
+    brand: product.merchant?.storeName ? {
+      '@type': 'Brand',
+      name: product.merchant.storeName
+    } : undefined,
+    offers: {
+      '@type': 'Offer',
+      url: productUrl,
+      priceCurrency: 'BRL',
+      price: (product.priceCents / 100).toFixed(2),
+      availability: product.stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+      seller: {
+        '@type': 'Organization',
+        name: product.merchant?.storeName || 'Pontual Market'
+      }
+    },
+    category: product.category?.name
+  }
+
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
+      />
+      <div className="max-w-7xl mx-auto px-4 py-8">
       {/* Breadcrumbs */}
       <div className="text-sm text-gray-500 mb-4">
         <Link href="/" className="hover:underline">Início</Link>
@@ -151,6 +184,7 @@ export default async function ProductPage({ params }: { params: { slug: string }
         <RelatedByCategory slug={product.category.slug} currentId={product.id} />
       )}
     </div>
+    </>
   )
 }
 

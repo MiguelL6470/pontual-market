@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { ProductCard } from '@/components/ProductCard'
 import { ShoppingBag, Star, Zap, Flame, Percent, Trophy } from 'lucide-react'
 import { getBaseUrl } from '@/lib/api'
@@ -44,23 +45,18 @@ export default async function HomePage() {
 
   return (
     <div>
-      {/* Hero Banner - responsivo com breakpoints ajustados */}
+      {/* Hero Banner - responsivo */}
       <section className="relative bg-white">
         <div className="relative w-full overflow-hidden">
-          <picture>
-            {/* Desktop - usar versão desktop de 769px em diante */}
-            <source media="(min-width: 769px)" srcSet="/2456px797.png 2456w, /1965px638.png 1965w" sizes="100vw" />
-            {/* Mobile fullscreen (alto) quando muito estreito */}
-            <source media="(max-width: 480px)" srcSet="/1080px1920.png 1080w" sizes="100vw" />
-            {/* Mobile 4:5 como fallback para tablets e mobile médio */}
-            <img
-              src="/1080px1350.png"
-              alt="Frete grátis para todo o Brasil"
-              className="w-full h-auto block"
-              loading="eager"
-              sizes="100vw"
-            />
-          </picture>
+          <Image
+            src="/banner.jpg"
+            alt="Frete grátis para todo o Brasil"
+            width={1024}
+            height={297}
+            className="w-full h-auto block object-cover"
+            priority
+            sizes="100vw"
+          />
         </div>
       </section>
 

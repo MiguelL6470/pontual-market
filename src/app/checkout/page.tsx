@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { useUser } from '@clerk/nextjs'
 import { ArrowLeft, MapPin, CreditCard, CheckCircle } from 'lucide-react'
 
 type CartItem = {
@@ -26,6 +27,7 @@ type ShippingAddress = {
 }
 
 export default function CheckoutPage() {
+  const { user } = useUser()
   const [cartItems, setCartItems] = useState<CartItem[]>([])
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
@@ -104,11 +106,20 @@ export default function CheckoutPage() {
       address,
     }
 
-    // Salvar pedido no localStorage
-    const existingOrders = localStorage.getItem('orders')
+    // Salvar pedido no localStorage (com ID do usuário se disponível)
+    const storageKey = user?.id ? `orders_${user.id}` : 'orders'
+    const existingOrders = localStorage.getItem(storageKey)
     const orders = existingOrders ? JSON.parse(existingOrders) : []
     orders.push(order)
-    localStorage.setItem('orders', JSON.stringify(orders))
+    localStorage.setItem(storageKey, JSON.stringify(orders))
+    
+    // Manter compatibilidade com pedidos antigos sem ID
+    if (!user?.id) {
+      const oldOrders = localStorage.getItem('orders')
+      const oldOrdersArray = oldOrders ? JSON.parse(oldOrders) : []
+      oldOrdersArray.push(order)
+      localStorage.setItem('orders', JSON.stringify(oldOrdersArray))
+    }
 
     // Limpar carrinho
     localStorage.removeItem('cart')

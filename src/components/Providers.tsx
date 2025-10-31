@@ -8,8 +8,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
       publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
       appearance={{
         branding: {
-          logo: '/logo2.png',
-          logoPlaceholder: '/logo2.png',
+          logo: '/logo.png',
+          logoPlaceholder: '/logo.png',
         },
         variables: {
           colorPrimary: '#2563eb',

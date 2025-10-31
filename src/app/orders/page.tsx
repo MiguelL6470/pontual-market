@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { useUser, SignedIn, SignedOut } from '@clerk/nextjs'
 import { Package, Clock, CheckCircle, XCircle, ArrowLeft } from 'lucide-react'
 
 type OrderItem = {
@@ -51,12 +52,20 @@ function getStatusInfo(status: Order['status']) {
 }
 
 export default function OrdersPage() {
+  const { user, isLoaded } = useUser()
   const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    if (!isLoaded) return
+    
+    if (!user) {
+      setLoading(false)
+      return
+    }
+
     // Carregar pedidos do localStorage
-    const stored = localStorage.getItem('orders')
+    const stored = localStorage.getItem(`orders_${user.id}`) || localStorage.getItem('orders')
     if (stored) {
       try {
         const parsed = JSON.parse(stored)
@@ -68,9 +77,9 @@ export default function OrdersPage() {
       }
     }
     setLoading(false)
-  }, [])
+  }, [user, isLoaded])
 
-  if (loading) {
+  if (loading || !isLoaded) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="animate-pulse space-y-4">
@@ -84,7 +93,24 @@ export default function OrdersPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
+    <>
+      <SignedOut>
+        <div className="max-w-7xl mx-auto px-4 py-8">
+          <div className="text-center py-20">
+            <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+            <h1 className="text-2xl font-bold text-gray-900 mb-4">Acesso necessário</h1>
+            <p className="text-gray-600 mb-8">Faça login para ver seus pedidos.</p>
+            <Link
+              href="/login?from=orders"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-header-dark text-white rounded-lg hover:bg-opacity-90 transition-colors"
+            >
+              Fazer Login
+            </Link>
+          </div>
+        </div>
+      </SignedOut>
+      <SignedIn>
+        <div className="max-w-7xl mx-auto px-4 py-8">
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-4 mb-4">
@@ -268,7 +294,9 @@ export default function OrdersPage() {
           })}
         </div>
       )}
-    </div>
+        </div>
+      </SignedIn>
+    </>
   )
 }
 

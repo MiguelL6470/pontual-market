@@ -31,7 +31,7 @@ export function Header() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 flex-shrink-0 h-full -my-2 -ml-1">
             <Image
-              src="/logo2.png"
+              src="/logo.png"
               alt="Pontual Market"
               width={320}
               height={106}

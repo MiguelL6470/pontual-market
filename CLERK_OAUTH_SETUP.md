@@ -12,7 +12,7 @@ Para que apareça "Pontual Market" ao invés de "Clerk" na tela de consentimento
    - Tipo: **External** (ou Internal se for organização)
    - Nome do app: **Pontual Market**
    - Email de suporte
-   - Logo: Faça upload do logo (`/logo2.png`)
+   - Logo: Faça upload do logo (`/logo.png`)
    - Domínio autorizado: Seu domínio (ex: `pontualmarket.com`)
    - Scopes: `email`, `profile`, `openid`
 6. Crie as credenciais OAuth:

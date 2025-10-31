@@ -64,37 +64,35 @@ export function Footer() {
             <div>
               <h4 className="font-semibold text-neutral-900 mb-4">Sobre o Pontual Market</h4>
               <ul className="space-y-2 text-sm">
-                <li><Link href="#" className="text-neutral-600 hover:text-blue-600">Sobre</Link></li>
-                <li><Link href="#" className="text-neutral-600 hover:text-blue-600">Investidores</Link></li>
-                <li><Link href="#" className="text-neutral-600 hover:text-blue-600">Tendências</Link></li>
-                <li><Link href="#" className="text-neutral-600 hover:text-blue-600">Blog</Link></li>
+                <li><Link href="/about" className="text-neutral-600 hover:text-blue-600">Sobre</Link></li>
+                <li><Link href="/register?role=merchant" className="text-neutral-600 hover:text-blue-600">Seja um Vendedor</Link></li>
+                <li><Link href="/contact" className="text-neutral-600 hover:text-blue-600">Contato</Link></li>
               </ul>
             </div>
 
           <div>
             <h4 className="font-semibold text-neutral-900 mb-4">Para você</h4>
             <ul className="space-y-2 text-sm">
-              <li><Link href="#" className="text-neutral-600 hover:text-blue-600">Minha Conta</Link></li>
-              <li><Link href="#" className="text-neutral-600 hover:text-blue-600">Favoritos</Link></li>
-              <li><Link href="#" className="text-neutral-600 hover:text-blue-600">Pedidos</Link></li>
+              <li><Link href="/favorites" className="text-neutral-600 hover:text-blue-600">Favoritos</Link></li>
+              <li><Link href="/deals" className="text-neutral-600 hover:text-blue-600">Ofertas</Link></li>
+              <li><Link href="/search" className="text-neutral-600 hover:text-blue-600">Buscar Produtos</Link></li>
             </ul>
           </div>
 
           <div>
             <h4 className="font-semibold text-neutral-900 mb-4">Atendimento</h4>
             <ul className="space-y-2 text-sm">
-              <li><Link href="#" className="text-neutral-600 hover:text-blue-600">Central de Ajuda</Link></li>
-              <li><Link href="#" className="text-neutral-600 hover:text-blue-600">Fale Conosco</Link></li>
-              <li><Link href="#" className="text-neutral-600 hover:text-blue-600">Segurança</Link></li>
+              <li><Link href="/contact" className="text-neutral-600 hover:text-blue-600">Fale Conosco</Link></li>
+              <li><Link href="/terms" className="text-neutral-600 hover:text-blue-600">Central de Ajuda</Link></li>
+              <li><Link href="/contact?subject=tecnico" className="text-neutral-600 hover:text-blue-600">Suporte Técnico</Link></li>
             </ul>
           </div>
 
           <div>
             <h4 className="font-semibold text-neutral-900 mb-4">Legal</h4>
             <ul className="space-y-2 text-sm">
-              <li><Link href="#" className="text-neutral-600 hover:text-blue-600">Termos e Condições</Link></li>
-              <li><Link href="#" className="text-neutral-600 hover:text-blue-600">Privacidade</Link></li>
-              <li><Link href="#" className="text-neutral-600 hover:text-blue-600">Acessibilidade</Link></li>
+              <li><Link href="/terms" className="text-neutral-600 hover:text-blue-600">Termos de Uso</Link></li>
+              <li><Link href="/privacy" className="text-neutral-600 hover:text-blue-600">Privacidade</Link></li>
             </ul>
           </div>
         </div>
