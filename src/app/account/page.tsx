@@ -8,7 +8,7 @@ export default async function AccountPage() {
   const session = await getServerAuth()
   
   if (!session?.user) {
-    redirect('/api/auth/signin')
+    redirect('/login')
   }
 
   const merchant = await prisma.merchant.findUnique({

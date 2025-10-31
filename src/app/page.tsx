@@ -44,20 +44,19 @@ export default async function HomePage() {
 
   return (
     <div>
-      {/* Hero Banner - sem cortes (object-contain) e altura fluida */}
+      {/* Hero Banner - responsivo com breakpoints ajustados */}
       <section className="relative bg-white">
-        <div className="relative w-full h-[clamp(260px,40vw,560px)]">
+        <div className="relative w-full overflow-hidden">
           <picture>
-            {/* Desktop (larguras amplas) */}
-            <source media="(min-width: 1280px)" srcSet="/2456px797.png 2456w, /1965px638.png 1965w" sizes="100vw" />
-            <source media="(min-width: 1024px)" srcSet="/1965px638.png 1965w" sizes="100vw" />
+            {/* Desktop - usar versão desktop de 769px em diante */}
+            <source media="(min-width: 769px)" srcSet="/2456px797.png 2456w, /1965px638.png 1965w" sizes="100vw" />
             {/* Mobile fullscreen (alto) quando muito estreito */}
             <source media="(max-width: 480px)" srcSet="/1080px1920.png 1080w" sizes="100vw" />
-            {/* Mobile 4:5 como fallback geral */}
+            {/* Mobile 4:5 como fallback para tablets e mobile médio */}
             <img
               src="/1080px1350.png"
               alt="Frete grátis para todo o Brasil"
-              className="absolute inset-0 w-full h-full object-contain object-center"
+              className="w-full h-auto block"
               loading="eager"
               sizes="100vw"
             />

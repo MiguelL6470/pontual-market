@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { ProductCard } from '@/components/ProductCard'
 import { getBaseUrl } from '@/lib/api'
 import { prisma } from '@/lib/db'
-import { Package, ArrowLeft } from 'lucide-react'
+import { Package, ArrowLeft, SlidersHorizontal, Filter } from 'lucide-react'
 
 async function getCategory(slug: string) {
   return await prisma.category.findUnique({
@@ -43,14 +43,10 @@ export default async function CategoryPage({ params }: { params: { slug: string 
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
-      {/* Header */}
-      <div className="mb-8">
-        <div className="flex items-center gap-4 mb-4">
-          <Link
-            href="/"
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-            aria-label="Voltar"
-          >
+      {/* Hero/Heading */}
+      <div className="mb-6">
+        <div className="flex items-center gap-4">
+          <Link href="/" className="p-2 hover:bg-gray-100 rounded-lg transition-colors" aria-label="Voltar">
             <ArrowLeft className="w-5 h-5 text-gray-600" />
           </Link>
           <div className="flex items-center gap-3">
@@ -60,13 +56,28 @@ export default async function CategoryPage({ params }: { params: { slug: string 
             <div>
               <h1 className="text-3xl font-bold text-gray-900">{category.name}</h1>
               <p className="text-gray-600 mt-1">
-                {total === 0
-                  ? 'Nenhum produto nesta categoria'
-                  : `${total} produto${total !== 1 ? 's' : ''} encontrado${total !== 1 ? 's' : ''}`
-                }
+                {total === 0 ? 'Nenhum produto nesta categoria' : `${total} produto${total !== 1 ? 's' : ''} encontrado${total !== 1 ? 's' : ''}`}
               </p>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Toolbar */}
+      <div className="flex items-center justify-between bg-white border border-gray-200 rounded-xl px-3 py-2 mb-6">
+        <div className="flex items-center gap-2 text-sm text-gray-700">
+          <Filter className="w-4 h-4" />
+          <span>Filtros rápidos:</span>
+          <Link href={`/search?category=${params.slug}&maxPrice=${50*100}`} className="px-2 py-1 bg-gray-100 hover:bg-gray-200 rounded">Até R$ 50</Link>
+          <Link href={`/search?category=${params.slug}&maxPrice=${200*100}`} className="px-2 py-1 bg-gray-100 hover:bg-gray-200 rounded">Até R$ 200</Link>
+          <Link href={`/search?category=${params.slug}&minPrice=${200*100}`} className="px-2 py-1 bg-gray-100 hover:bg-gray-200 rounded">Acima de R$ 200</Link>
+        </div>
+        <div className="flex items-center gap-2 text-sm text-gray-700">
+          <SlidersHorizontal className="w-4 h-4" />
+          <span>Ordenar:</span>
+          <Link href={`/search?category=${params.slug}`} className="px-2 py-1 hover:bg-gray-100 rounded">Mais recentes</Link>
+          <Link href={`/search?category=${params.slug}`} className="px-2 py-1 hover:bg-gray-100 rounded">Menor preço</Link>
+          <Link href={`/search?category=${params.slug}`} className="px-2 py-1 hover:bg-gray-100 rounded">Maior preço</Link>
         </div>
       </div>
 

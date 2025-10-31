@@ -1,31 +1,32 @@
 'use client'
 
 import Link from 'next/link'
-import { useSession } from 'next-auth/react'
-import { User } from 'lucide-react'
+import { SignedIn, SignedOut, UserButton, useUser } from '@clerk/nextjs'
 
 export function HeaderAuth() {
-  const { data: session } = useSession()
-
-  if (session?.user) {
-    return (
-      <Link
-        href="/account"
-        className="flex items-center gap-1 px-3 py-2 hover:bg-blue-700 rounded-lg transition-colors"
-      >
-        <User className="w-5 h-5" />
-        <span className="hidden lg:inline text-sm">Minha Conta</span>
-      </Link>
-    )
-  }
+  const { user } = useUser()
 
   return (
-    <Link
-      href="/api/auth/signin"
-      className="flex items-center gap-1 px-3 py-2 hover:bg-blue-700 rounded-lg transition-colors"
-    >
-      <span className="text-sm">Entrar</span>
-    </Link>
+    <>
+      <SignedIn>
+        <Link
+          href="/account"
+          className="flex flex-col items-start px-3 py-2 hover:bg-opacity-20 hover:bg-white rounded-lg transition-colors"
+        >
+          <span className="text-xs text-gray-300">Olá, {user?.firstName || 'Usuário'}</span>
+          <span className="text-sm font-semibold whitespace-nowrap">Conta</span>
+        </Link>
+        <UserButton afterSignOutUrl="/" />
+      </SignedIn>
+      <SignedOut>
+        <Link
+          href="/login"
+          className="flex items-center gap-1 px-3 py-2 hover:bg-opacity-20 hover:bg-white rounded-lg transition-colors"
+        >
+          <span className="text-sm font-semibold whitespace-nowrap">Entrar</span>
+        </Link>
+      </SignedOut>
+    </>
   )
 }
 

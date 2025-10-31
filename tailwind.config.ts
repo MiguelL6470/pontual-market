@@ -16,6 +16,16 @@ const config: Config = {
           600: '#2563eb',
           700: '#1d4ed8',
         },
+        banner: {
+          light: '#53eaff',
+          DEFAULT: '#53eaff',
+        },
+        header: {
+          dark: '#2563eb',
+          600: '#2563eb',
+          700: '#1e40af',
+          DEFAULT: '#2563eb',
+        },
       },
     },
   },
