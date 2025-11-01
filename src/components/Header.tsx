@@ -36,7 +36,7 @@ export function Header() {
               width={320}
               height={106}
               sizes="(min-width: 1024px) 300px, 240px"
-              className="object-contain h-full w-auto"
+              className="object-contain w-auto max-h-24 lg:max-h-28"
               priority
             />
           </Link>
