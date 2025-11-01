@@ -31,17 +31,20 @@ async function fetchByCategory(slug: string, take: number = 8) {
 
 export default async function HomePage() {
   const [latest, cats] = await Promise.all([fetchLatest(), fetchCategories()])
+  
+  // Garantir que items e categories sejam arrays
+  const items = latest?.data?.items || latest?.items || []
+  const categories = cats?.categories || []
+  
   // Seções adicionais: mais vendidos (mock com últimos), ofertas do dia (mock com primeiros), por categoria
-  const topSellers = latest.items.slice(0, 8)
-  const dealsOfDay = latest.items.slice(4, 12)
-  const catSlugs: string[] = (cats.categories || []).map((c: any) => c.slug as string)
+  const topSellers = items.slice(0, 8)
+  const dealsOfDay = items.slice(4, 12)
+  const catSlugs: string[] = categories.map((c: any) => c.slug as string)
   const takePerCat = 6
   const firstTwoCats: string[] = catSlugs.slice(0, 2)
   const [catA, catB] = await Promise.all(
     firstTwoCats.map((slug: string) => fetchByCategory(slug, takePerCat))
   )
-  const { items } = latest
-  const { categories } = cats
 
   return (
     <div>
@@ -53,7 +56,7 @@ export default async function HomePage() {
             alt="Frete grátis para todo o Brasil"
             width={1024}
             height={297}
-            className="w-full h-auto block object-cover"
+            className="w-full h-auto block object-cover object-top max-h-[300px] sm:max-h-[340px] md:max-h-[420px]"
             priority
             sizes="100vw"
           />
@@ -146,34 +149,34 @@ export default async function HomePage() {
       )}
 
       {/* Categorias em destaque (primeiras duas categorias com carrosséis simples em grid) */}
-      {(catA?.items?.length || catB?.items?.length) && (
+      {((catA?.data?.items || catA?.items)?.length || (catB?.data?.items || catB?.items)?.length) && (
         <section className="py-10 bg-gray-50">
           <div className="max-w-7xl mx-auto px-4 space-y-10">
-            {catA?.items?.length > 0 && (
+            {(catA?.data?.items || catA?.items || []).length > 0 && (
               <div>
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="flex items-center gap-2 text-lg font-semibold text-gray-900">
-                    <Flame className="w-5 h-5 text-orange-500" /> {cats.categories[0].name}
+                    <Flame className="w-5 h-5 text-orange-500" /> {categories[0]?.name || ''}
                   </h3>
-                  <Link href={`/search?category=${cats.categories[0].slug}`} className="text-blue-600 hover:text-blue-700 text-sm font-medium">Ver categoria →</Link>
+                  <Link href={`/search?category=${categories[0]?.slug || ''}`} className="text-blue-600 hover:text-blue-700 text-sm font-medium">Ver categoria →</Link>
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                  {catA.items.slice(0, 5).map((p: any) => (
+                  {(catA?.data?.items || catA?.items || []).slice(0, 5).map((p: any) => (
                     <ProductCard key={p.id} product={p} />
                   ))}
                 </div>
               </div>
             )}
-            {catB?.items?.length > 0 && (
+            {(catB?.data?.items || catB?.items || []).length > 0 && categories[1] && (
               <div>
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="flex items-center gap-2 text-lg font-semibold text-gray-900">
-                    <Flame className="w-5 h-5 text-orange-500" /> {cats.categories[1].name}
+                    <Flame className="w-5 h-5 text-orange-500" /> {categories[1].name}
                   </h3>
-                  <Link href={`/search?category=${cats.categories[1].slug}`} className="text-blue-600 hover:text-blue-700 text-sm font-medium">Ver categoria →</Link>
+                  <Link href={`/search?category=${categories[1].slug}`} className="text-blue-600 hover:text-blue-700 text-sm font-medium">Ver categoria →</Link>
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                  {catB.items.slice(0, 5).map((p: any) => (
+                  {(catB?.data?.items || catB?.items || []).slice(0, 5).map((p: any) => (
                     <ProductCard key={p.id} product={p} />
                   ))}
                 </div>

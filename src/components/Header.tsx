@@ -29,14 +29,14 @@ export function Header() {
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         <div className="flex items-center gap-3 h-16 lg:h-20">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 flex-shrink-0 h-full -my-2 -ml-1">
+          <Link href="/" className="flex items-center gap-2 flex-shrink-0 h-full">
             <Image
               src="/logo.png"
               alt="Pontual Market"
               width={320}
               height={106}
               sizes="(min-width: 1024px) 300px, 240px"
-              className="object-contain w-auto max-h-24 lg:max-h-28"
+              className="object-contain h-full w-auto"
               priority
             />
           </Link>

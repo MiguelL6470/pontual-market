@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Save } from 'lucide-react'
+import { ImageUploader } from '@/components/ImageUploader'
 
 type Category = {
   id: string
@@ -27,6 +28,7 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
   const [message, setMessage] = useState<string | null>(null)
   const [categories, setCategories] = useState<Category[]>([])
   const [product, setProduct] = useState<Product | null>(null)
+  const [uploadedImages, setUploadedImages] = useState<Array<{ url: string; alt?: string; position: number }>>([])
   const router = useRouter()
 
   useEffect(() => {
@@ -41,6 +43,9 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
       .then((data) => {
         if (data.product) {
           setProduct(data.product)
+          setUploadedImages(
+            data.product.images.map((img: { id: string; url: string; alt: string | null }) => ({ url: img.url, alt: img.alt || undefined }))
+          )
         }
       })
       .catch((error) => {
@@ -220,6 +225,12 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
               </select>
             </div>
           </div>
+
+          <ImageUploader
+            maxImages={8}
+            onImagesChange={setUploadedImages}
+            initialImages={uploadedImages}
+          />
 
           <div className="pt-6 border-t">
             <button

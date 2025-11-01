@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { ProductCard } from '@/components/ProductCard'
 import { Search, Filter, X } from 'lucide-react'
@@ -20,7 +20,7 @@ type Category = {
   slug: string
 }
 
-export default function SearchPage() {
+function SearchContent() {
   const searchParams = useSearchParams()
   const [products, setProducts] = useState<Product[]>([])
   const [categories, setCategories] = useState<Category[]>([])
@@ -55,7 +55,7 @@ export default function SearchPage() {
     try {
       const res = await fetch(`/api/products?${params.toString()}`)
       const data = await res.json()
-      setProducts(data.items || [])
+      setProducts(data?.data?.items || data?.items || [])
     } catch (error) {
       console.error('Error fetching products:', error)
     } finally {
@@ -212,5 +212,28 @@ export default function SearchPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense fallback={
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="animate-pulse space-y-4">
+          <div className="h-8 bg-gray-200 rounded w-64" />
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+            {[...Array(6)].map((_, i) => (
+              <div key={i}>
+                <div className="aspect-[4/3] bg-gray-200 rounded-lg mb-3" />
+                <div className="h-4 bg-gray-200 rounded mb-2" />
+                <div className="h-4 bg-gray-200 rounded w-1/2" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    }>
+      <SearchContent />
+    </Suspense>
   )
 }

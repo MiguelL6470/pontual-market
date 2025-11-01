@@ -21,7 +21,9 @@ async function fetchCategoryProducts(categorySlug: string) {
 
 export default async function CategoryPage({ params }: { params: { slug: string } }) {
   const category = await getCategory(params.slug)
-  const { items, total } = await fetchCategoryProducts(params.slug)
+  const result = await fetchCategoryProducts(params.slug)
+  const items = result?.data?.items || result?.items || []
+  const total = result?.data?.total || result?.total || 0
 
   if (!category) {
     return (

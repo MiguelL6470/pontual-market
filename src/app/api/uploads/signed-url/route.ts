@@ -1,8 +1,9 @@
-import { NextResponse } from 'next/server'
 import { z } from 'zod'
 import { getServerAuth } from '@/lib/auth'
-import { supabaseServer } from '@/lib/supabaseServer'
+import { getSupabaseServer, getSupabasePublicUrl } from '@/lib/supabaseServer'
 import { rateLimit } from '@/lib/rateLimit'
+import { successResponse, errorResponse, unauthorizedResponse, serverErrorResponse } from '@/lib/api-response'
+import { NextResponse } from 'next/server'
 
 const bodySchema = z.object({
   bucket: z.literal('products'),
@@ -13,32 +14,37 @@ const bodySchema = z.object({
 export async function POST(req: Request) {
   const ip = (req.headers.get('x-forwarded-for') ?? 'local').split(',')[0]
   if (!rateLimit(`uploads:${ip}`, 10, 60_000)) {
-    return NextResponse.json({ error: 'rate_limited' }, { status: 429 })
+    return errorResponse('rate_limited', 429)
   }
   const session = await getServerAuth()
   if (!session?.user) {
-    return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
+    return unauthorizedResponse()
   }
 
   const json = await req.json().catch(() => null)
   const parsed = bodySchema.safeParse(json)
   if (!parsed.success) {
-    return NextResponse.json({ error: 'invalid_body', details: parsed.error.format() }, { status: 400 })
+    return errorResponse('invalid_body', 400, parsed.error.format())
   }
 
   const { bucket, key, expiresIn } = parsed.data
+  const supabaseServer = getSupabaseServer()
   const { data, error } = await supabaseServer.storage
     .from(bucket)
     .createSignedUploadUrl(key, { upsert: false })
 
   if (error || !data) {
-    return NextResponse.json({ error: error?.message ?? 'cannot_create_url' }, { status: 500 })
+    return serverErrorResponse(error?.message ?? 'cannot_create_url')
   }
 
-  return NextResponse.json({
+  const supabaseUrl = getSupabasePublicUrl()
+  const publicUrl = `${supabaseUrl}/storage/v1/object/public/products/${key}`
+
+  return successResponse({
     url: data.signedUrl,
     token: data.token, // pode ser usado em upload direto
     path: key,
+    publicUrl, // URL pública da imagem após o upload
   })
 }
 

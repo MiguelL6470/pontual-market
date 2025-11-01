@@ -1,8 +1,10 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { ArrowLeft, Save } from 'lucide-react'
 import Link from 'next/link'
+import { ImageUploader } from '@/components/ImageUploader'
 
 type Category = {
   id: string
@@ -10,10 +12,12 @@ type Category = {
 }
 
 export default function NewProductPage() {
+  const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState<string | null>(null)
   const [categories, setCategories] = useState<Category[]>([])
   const [selectedCategoryId, setSelectedCategoryId] = useState('')
+  const [uploadedImages, setUploadedImages] = useState<Array<{ url: string; alt?: string; position: number }>>([])
 
   useEffect(() => {
     fetch('/api/categories')
@@ -26,11 +30,18 @@ export default function NewProductPage() {
     setLoading(true)
     setMessage(null)
     
+    // Validar imagens
+    if (uploadedImages.length === 0) {
+      setMessage('Adicione pelo menos uma imagem')
+      setLoading(false)
+      return
+    }
+    
     const formData = new FormData(e.currentTarget)
     const payload: any = Object.fromEntries(formData.entries())
     payload.priceCents = Math.round(Number(payload.priceCents) * 100)
     payload.stock = Number(payload.stock || 0)
-    payload.images = [] // Uploads serão adicionados depois
+    payload.images = uploadedImages
     
     const res = await fetch('/api/products', {
       method: 'POST',
@@ -43,6 +54,10 @@ export default function NewProductPage() {
     if (res.ok) {
       setMessage('Produto criado com sucesso!')
       e.currentTarget.reset()
+      setUploadedImages([])
+      setTimeout(() => {
+        router.push('/dashboard/products')
+      }, 1500)
     } else {
       setMessage(json.error || 'Erro ao criar produto')
     }
@@ -136,6 +151,11 @@ export default function NewProductPage() {
               ))}
             </select>
           </div>
+
+          <ImageUploader
+            maxImages={8}
+            onImagesChange={setUploadedImages}
+          />
 
           <div className="pt-6 border-t">
             <button
